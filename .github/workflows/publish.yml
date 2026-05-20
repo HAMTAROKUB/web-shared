@@ -1,0 +1,50 @@
+name: Publish to GitHub Packages
+
+on:
+  # Trigger when a GitHub Release is created
+  release:
+    types: [published]
+
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (skip npm publish)'
+        type: boolean
+        default: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write   # Required to publish to GitHub Packages
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          # Scope must match the package name prefix in package.json
+          scope: '@YOUR_GITHUB_USERNAME'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build library
+        run: npm run build:lib
+
+      - name: Publish package
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: npm publish
+        env:
+          # GITHUB_TOKEN is automatically provided by GitHub Actions
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
