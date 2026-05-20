@@ -47,4 +47,4 @@ jobs:
         run: npm publish
         env:
           # GITHUB_TOKEN is automatically provided by GitHub Actions
-          NODE_AUTH_TOKEN: ${{ secrets.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 }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
