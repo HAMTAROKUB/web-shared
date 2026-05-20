@@ -31,7 +31,7 @@ jobs:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
           # Scope must match the package name prefix in package.json
-          scope: '@HAMTAROKUB/web-shared'
+          scope: '@HAMTAROKUB'
 
       - name: Install dependencies
         run: npm ci
